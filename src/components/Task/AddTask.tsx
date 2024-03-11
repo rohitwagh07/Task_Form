@@ -74,6 +74,7 @@ const AddTask = () => {
     useEffect(()=>{
         dispatch(getTaskSubjectList())
         dispatch(getTaskTypeList())
+        // console.log("Comp. Mounted")
     },[]
     )
 
@@ -84,7 +85,7 @@ const AddTask = () => {
                 // navigate("../../EmployeeList")
                 dispatch(getTasksList())
                 ClearFormFields();
-                // setHearderMsg('Add Task')
+               
             }  
 
     }, [AddTaskMsg])
@@ -143,7 +144,6 @@ const AddTask = () => {
     };
     const clickCancel = () => {
         navigate("/AddTask/")
-        setHearderMsg('Add Task');
         ClearFormFields();
     }
 
