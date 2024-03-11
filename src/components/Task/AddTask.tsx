@@ -65,13 +65,17 @@ const AddTask = () => {
 
     
     useEffect(() => {
-        dispatch(getTaskSubjectList())
-        dispatch(getTaskTypeList())
         const GetTaskDetailsBody: IGetTaskDetailsBody = {
             ID: Number(Id)
         }
         dispatch(getTaskDetails(GetTaskDetailsBody))
     }, [Id])
+
+    useEffect(()=>{
+        dispatch(getTaskSubjectList())
+        dispatch(getTaskTypeList())
+    },[]
+    )
 
     useEffect(() => {
             if (AddTaskMsg != "") {
