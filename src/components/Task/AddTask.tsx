@@ -45,16 +45,19 @@ const AddTask = () => {
     }, [])
     useEffect(() => {
         dispatch(getTaskTypeList())
-    },[])
+    },[]
+    )
 
     useEffect(() => {
-        if (AddTaskMsg != "") {
-            toast.success(AddTaskMsg)
-            dispatch(resetAddTaskDetails())
-            ClearFormFields();
-            // navigate("../../EmployeeList")
-            // dispatch(getTaskList())
-        }
+            if (AddTaskMsg != "") {
+                toast.success(AddTaskMsg)
+                dispatch(resetAddTaskDetails())
+                // navigate("../../EmployeeList")
+                dispatch(getTasksList())
+                ClearFormFields();
+                // setHearderMsg('Add Task')
+            }  
+
     }, [AddTaskMsg])
 
 
@@ -79,6 +82,12 @@ const AddTask = () => {
     const handleCheckboxChange = (event) => {
         setReminder(event.target.checked);
     };
+    const clickCancel = () => {
+        navigate("/AddTask/")
+        setHearderMsg('Add Task');
+        ClearFormFields();
+    }
+
 
     const IsFormValid = () => {
         let returnVal = true
