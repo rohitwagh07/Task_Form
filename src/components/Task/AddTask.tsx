@@ -1,139 +1,77 @@
-import { Container, Grid } from "@mui/material"
-import Checkbox from "@mui/material/Checkbox"
-import FormControlLabel from '@mui/material/FormControlLabel'
-import { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { toast } from 'react-toastify'
-import ButtonField from "src/libraries/Training/ButtonField"
-import CalendarField from "src/libraries/Training/CalendarField"
-import Dropdown from "src/libraries/Training/Dropdown"
-import InputField from "src/libraries/Training/InputField"
-import RadioList from "src/libraries/Training/RadioList"
-import PageHeader from "src/libraries/heading/PageHeader"
-import TasksList from "./TasksList"
-import { IAddTaskBody,IGetTaskDetailsBody } from "src/interfaces/Task/ITask"
-import {
-    getTaskSubjectList,
-    getTaskTypeList,
-    resetAddTaskDetails,
-    AddTaskDetails,
-    getTasksList,
-    getTaskDetails
-} from "src/requests/Task/RequestTask"
+import React, { useEffect } from 'react'
+import RadioList from 'src/libraries/Training/RadioList'
+import { Checkbox, Container, FormControlLabel, Grid } from '@mui/material'
+import PageHeader from 'src/libraries/heading/PageHeader'
+import { useState, Dispatch } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { AddTaskDetails, getTaskSubjectList, getTaskTypeList, resetAddTaskDetails, getTasksList } from 'src/requests/Task/RequestTask'
 import { RootState } from 'src/store'
-import { useNavigate } from 'react-router-dom'
-import {getCalendarFormat } from "../Common/Util"
+import InputField from 'src/libraries/Training/InputField'
+import CalendarField from 'src/libraries/Training/CalendarField'
+import Dropdown from 'src/libraries/Training/Dropdown'
+import Buttons from 'src/libraries/buttons/button'
+import { IAddTaskBody } from 'src/interfaces/Task/ITask'
+import ButtonField from 'src/libraries/Training/ButtonField'
+import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
+import TasksList from './TasksList'
+
 
 
 const AddTask = () => {
-    
-    const navigate = useNavigate();
+    const navigate=useNavigate();
+    const [Id, setId] = useState('')
+    const [TaskSubjectId, setTaskSubjectId] = useState('0')
+    const [TaskName, setTaskName] = useState('')
+    const [Date, setDate] = useState('')
+    const [TaskTypeId, setTaskTypeId] = useState('1')
+    const [Reminder, setReminder] = useState(false)
+
+
+
+    //Error msg state varible
+    const [getTaskSubjectListErrorMessage, setTaskSubjectListErrorMessage] = useState('')
+    const [getTaskNameErrorMessage, setTaskNameErrorMessage] = useState('')
+    const [getDateErrorMessage, setDateErrorMessage] = useState('')
     const dispatch = useDispatch();
-    const [Id, setId] = useState('');
-    const taskSubjectList = useSelector((state: RootState) => state.Task.TaskSubjectList);
-    const taskTypeList = useSelector((state: RootState) => state.Task.TaskTypeList);
+    const TaskSubjectList = useSelector((state: RootState) => state.Task.TaskSubjectList)
+    const TaskTypeList = useSelector((state: RootState) => state.Task.TaskTypeList)
     const AddTaskMsg = useSelector((state: RootState) => state.Task.AddTaskMsg);
-    const TaskDetails = useSelector((state: RootState) => state.Task.TaskDetails);
+    // useEffect for subject list
 
-
-
-    // const [taskSubjectList, setTaskSubjectList] = useState([
-    //     { Id: 1, Name: 'SQL', Value: "1" },
-    //     { Id: 2, Name: 'ASP.Net', Value: "2" },
-    //     { Id: 3, Name: 'React', Value: "3" }
-    // ]
-    // )
-    // const [taskTypeList, setTaskTypeList] = useState([
-    //     { Id: 1, Name: 'Learning', Value: "1" },
-    //     { Id: 2, Name: 'Discussion', Value: "2" },
-    //     { Id: 3, Name: 'Assignment', Value: "3" }
-    // ]
-    // )
-    const [headerMsg,setHearderMsg] = useState("Add Task")
-    const [taskSubjectId, setTaskSubjectId] = useState("0")
-    const [taskTypeId, setTaskTypeId] = useState("1")
-    const [taskName, setTask] = useState("")
-    const [dateTime, setDateTime] = useState("")
-    const [reminder, setReminder] = useState(false)
-    //////
-    const [TaskSubjectErrorMessage, setTaskSubjectErrorMessage] = useState("")
-    const [TaskTypeErrorMessage, setTaskTypeErrorMessage] = useState("")
-    const [dateTimeErrorMessage, setdateTimeErrorMessage] = useState("")
-    const [TaskNameErrorMessage, setTaskNameErrorMessage] = useState("")
-    
-    /////
-
-    
     useEffect(() => {
-        const GetTaskDetailsBody: IGetTaskDetailsBody = {
-            ID: Number(Id)
-        }
-        dispatch(getTaskDetails(GetTaskDetailsBody))
-    }, [Id])
-
-    useEffect(()=>{
         dispatch(getTaskSubjectList())
+
+    }, [])
+    useEffect(() => {
         dispatch(getTaskTypeList())
-    },[]
-    )
+    },[])
 
     useEffect(() => {
-            if (AddTaskMsg != "") {
-                toast.success(AddTaskMsg)
-                dispatch(resetAddTaskDetails())
-                // navigate("../../EmployeeList")
-                dispatch(getTasksList())
-                ClearFormFields();
-                // setHearderMsg('Add Task')
-            }  
-
+        if (AddTaskMsg != "") {
+            toast.success(AddTaskMsg)
+            dispatch(resetAddTaskDetails())
+            ClearFormFields();
+            // navigate("../../EmployeeList")
+            // dispatch(getTaskList())
+        }
     }, [AddTaskMsg])
 
-    useEffect(() => {
-        if (TaskDetails != null) {
-            setTask(TaskDetails.TaskName)
-            setDateTime(getCalendarFormat(TaskDetails.Tasktime))
-            setTaskSubjectId(TaskDetails.TaskSubjectId)
-            setTaskTypeId(TaskDetails.TaskTypeId)
-            setReminder(TaskDetails.IsReminder)
-        }
-    }, [TaskDetails])
 
-    // useEffect(() => {
-    //     if (Id==='') {
-    //         setHearderMsg('Add Task');
-    //     } else {
-    //         setHearderMsg('Edit Task');
-    //     }
-    // }, [Id]);
-    ////////
-    const ClearFormFields = () => {
-        setTask('')
-        setDateTime('')
-        setId('')
-        setTaskSubjectId('0')
-        setTaskTypeId('1')
-        setReminder(false)
-        setTaskNameErrorMessage('')
-        setdateTimeErrorMessage('')
-        setTaskTypeErrorMessage('')
-        setTaskSubjectErrorMessage('')
-        console.log(TaskDetails)
-    }
 
-    ///////
+
+
+
+    console.log(TaskSubjectList);
+
     const clickTaskSubject = (value) => {
         setTaskSubjectId(value)
     }
-    const clickTask = (value) => {
-        setId(value)
-    }
-
     const clickTaskName = (value) => {
-        setTask(value)
+        setTaskName(value)
     }
-    const clickDateTime = (value) => {
-        setDateTime(value)
+    const clickDate = (value) => {
+        setDate(value)
     }
     const clickTaskType = (value) => {
         setTaskTypeId(value)
@@ -141,110 +79,118 @@ const AddTask = () => {
     const handleCheckboxChange = (event) => {
         setReminder(event.target.checked);
     };
+
+    const IsFormValid = () => {
+        let returnVal = true
+        if (TaskSubjectId === '0') {
+            setTaskSubjectListErrorMessage('Field is mandatory')
+            let returnVal = false
+        } else {
+            setTaskSubjectListErrorMessage('')
+        }
+        if (TaskName === '') {
+            setTaskNameErrorMessage('Field is mandatory')
+            let returnVal = false
+        } else {
+            setTaskNameErrorMessage('')
+        }
+        if (Date === '') {
+            setDateErrorMessage('Field is mandatory')
+            let returnVal = false
+        } else {
+            setDateErrorMessage('')
+        }
+        return returnVal
+    }
+
+    //Cancel button logic
+
+    const ClearFormFields = () => {
+        setTaskSubjectId('0')
+        setTaskName('')
+        setDate('')
+        setTaskTypeId('1')
+        setReminder(false)
+    }
     const clickCancel = () => {
-        navigate("/AddTask/")
-        setHearderMsg('Add Task');
         ClearFormFields();
     }
 
 
-    const IsFormValid = () => {
-        let returnVal = true;
-        if (taskSubjectId === "0") {
-            setTaskSubjectErrorMessage("Field is mandatory");
-            returnVal = false;
-        } else {
-            setTaskSubjectErrorMessage("");
-        }
-        if (taskName === "") {
-            setTaskNameErrorMessage("Field is mandatory");
-            returnVal = false;
-        } else {
-            setTaskNameErrorMessage("");
-        }
-        if (dateTime === "") {
-            setdateTimeErrorMessage("Field is mandatory");
-            returnVal = false;
-        } else {
-            setdateTimeErrorMessage("");
-        }
-        // if (taskTypeId =="0") {
-        //     setTaskTypeErrorMessage("Field is mandatory");
-        //     returnVal = false;
-        // } else {
-        //     setTaskTypeErrorMessage("");
-        // }
-        return returnVal;
-    }
-    
-    
+
     const clickSubmit = () => {
         if (IsFormValid()) {
             const AddTaskBody: IAddTaskBody = {
                 ID: Id == '' ? 0 : Number(Id),
-                TaskName: taskName,
-                Tasktime: dateTime,
-                TaskSubjectId: Number(taskSubjectId),
-                TaskTypeId: Number(taskTypeId),
-                IsReminder: reminder
+                TaskName: TaskName,
+                Tasktime: Date,
+                TaskSubjectId: Number(TaskSubjectId),
+                TaskTypeId: Number(TaskTypeId),
+                IsReminder: Reminder
             }
             dispatch(AddTaskDetails(AddTaskBody))
-            navigate("/AddTask/")
-            // setHearderMsg('')
+            navigate('/TasksList/')
+            
+
         }
     }
     return (
         <Container>
             <Grid container direction="column" alignItems="center" justifyContent="center">
                 <Grid container spacing={2}>
+
+                    {/* <Grid container spacing={2}> */}
                     <Grid item xs={12}>
-                        <PageHeader heading={headerMsg} subheading={''} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <RadioList ItemList={taskSubjectList} Label={'Task Subject'}
-                            DefaultValue={taskSubjectId} ClickItem={clickTaskSubject} 
-                            ErrorMessage={TaskSubjectErrorMessage} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <InputField Item={taskName} Label={'Task Name'}
-                            ClickItem={clickTaskName} 
-                            ErrorMessage={TaskNameErrorMessage} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <CalendarField Item={dateTime} Label={'Date & Time'}
-                            ClickItem={clickDateTime} 
-                            ErrorMessage={dateTimeErrorMessage} />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Dropdown ItemList={taskTypeList} Label={'Task Type'}
-                            DefaultValue={taskTypeId} ClickItem={clickTaskType} 
-                            ErrorMessage={TaskTypeErrorMessage} />
+                        <PageHeader heading={'Add Task'} subheading={''} />
                     </Grid>
 
                     <Grid item xs={12}>
+                        <RadioList ItemList={TaskSubjectList} Label={'TaskSubject'}
+                            DefaultValue={TaskSubjectId}
+                            ClickItem={clickTaskSubject}
+                            ErrorMessage={getTaskSubjectListErrorMessage} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputField Item={TaskName} Label={'TaskName'}
+                            ClickItem={clickTaskName}
+                            ErrorMessage={getTaskNameErrorMessage} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CalendarField Item={Date} Label={'Date and Time'}
+                            ClickItem={clickDate}
+                            ErrorMessage={getDateErrorMessage} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Dropdown ItemList={TaskTypeList} Label={'Task'}
+                            DefaultValue={TaskTypeId}
+                            ClickItem={clickTaskType} />
+                    </Grid>
+                    <Grid item xs={12}>
                         <FormControlLabel
-                            control={<Checkbox checked={reminder} onChange={handleCheckboxChange} />}
+                            control={<Checkbox checked={Reminder} onChange={handleCheckboxChange} />}
                             label="Set Reminder"
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <ButtonField Label={'Submit'} ClickItem={clickSubmit} /> &nbsp;&nbsp;
+                        <ButtonField Label={'Submit'} ClickItem={clickSubmit} /> &nbsp;
                         <ButtonField Label={'Cancel'} ClickItem={clickCancel} />
                     </Grid>
-                    <Grid item xs={12}>
 
-                    </Grid>
-                </Grid>
-                <br /><br /><br />
-                <Grid item xs={12} md={6} >
-                    <TasksList taskId={clickTask} />
-                    
-                    {/* <TasksList /> */}
+
+
+
 
                 </Grid>
-            </Grid>
-        </Container>
+            </Grid> <br /><br /><br />
+<TasksList/>
+        </Container >
+
     )
 }
 
 export default AddTask
+
+
+
+
+
