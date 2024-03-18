@@ -4,17 +4,18 @@ import { Checkbox, Container, FormControlLabel, Grid } from '@mui/material'
 import PageHeader from 'src/libraries/heading/PageHeader'
 import { useState, Dispatch } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AddTaskDetails, getTaskSubjectList, getTaskTypeList, resetAddTaskDetails, getTasksList } from 'src/requests/Task/RequestTask'
+import { AddTaskDetails, getTaskSubjectList, getTaskTypeList, resetAddTaskDetails, getTasksList,getTaskDetails } from 'src/requests/Task/RequestTask'
 import { RootState } from 'src/store'
 import InputField from 'src/libraries/Training/InputField'
 import CalendarField from 'src/libraries/Training/CalendarField'
 import Dropdown from 'src/libraries/Training/Dropdown'
 import Buttons from 'src/libraries/buttons/button'
-import { IAddTaskBody } from 'src/interfaces/Task/ITask'
+import { IAddTaskBody, IGetTaskDetailsBody } from 'src/interfaces/Task/ITask'
 import ButtonField from 'src/libraries/Training/ButtonField'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 import TasksList from './TasksList'
+import { getCalendarFormat } from '../Common/Util'
 
 
 
@@ -37,6 +38,8 @@ const AddTask = () => {
     const TaskSubjectList = useSelector((state: RootState) => state.Task.TaskSubjectList)
     const TaskTypeList = useSelector((state: RootState) => state.Task.TaskTypeList)
     const AddTaskMsg = useSelector((state: RootState) => state.Task.AddTaskMsg);
+    const TaskDetails = useSelector((state: RootState) => state.Task.TaskDetails);
+    
     // useEffect for subject list
 
     useEffect(() => {
@@ -47,6 +50,25 @@ const AddTask = () => {
         dispatch(getTaskTypeList())
     },[]
     )
+    // passing Id to Get task Details
+    
+    useEffect(()=>{
+        const IgetTaskDetails : IGetTaskDetailsBody ={
+            ID:Number(Id)
+        }
+        dispatch(getTaskDetails(IgetTaskDetails))
+    },[Id])
+
+    //Populating Task data into form 
+    useEffect(()=>{
+if(TaskDetails!== null){
+    setTaskSubjectId(TaskDetails.TaskSubjectId)
+    setTaskName(TaskDetails.TaskName)
+    setDate(getCalendarFormat(TaskDetails.Tasktime))
+    setTaskTypeId(TaskDetails.TaskTypeId)
+    setReminder(TaskDetails. IsReminder)
+}
+    },[TaskDetails])
 
     useEffect(() => {
             if (AddTaskMsg != "") {
@@ -84,8 +106,11 @@ const AddTask = () => {
     };
     const clickCancel = () => {
         navigate("/AddTask/")
-        setHearderMsg('Add Task');
+        // setHearderMsg('Add Task');
         ClearFormFields();
+    }
+    const clickTaskId = (value) => {
+        setId(value)
     }
 
 
@@ -121,9 +146,9 @@ const AddTask = () => {
         setTaskTypeId('1')
         setReminder(false)
     }
-    const clickCancel = () => {
-        ClearFormFields();
-    }
+    // const clickCancel = () => {
+    //     ClearFormFields();
+    // }
 
 
 
@@ -138,7 +163,8 @@ const AddTask = () => {
                 IsReminder: Reminder
             }
             dispatch(AddTaskDetails(AddTaskBody))
-            navigate('/TasksList/')
+
+            // navigate('/TasksList/')
             
 
         }
@@ -191,7 +217,7 @@ const AddTask = () => {
 
                 </Grid>
             </Grid> <br /><br /><br />
-<TasksList/>
+            <TasksList TaskId={clickTaskId} />
         </Container >
 
     )

@@ -2,8 +2,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { Container, Grid } from '@mui/material'
 
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 import { toast } from 'react-toastify';
 import { IGetTaskDetailsBody } from 'src/interfaces/Task/ITask';
@@ -13,8 +14,9 @@ import { deleteTaskDetails, resetDeleteTaskDetails, getTasksList } from 'src/req
 import { RootState } from 'src/store';
 
 
-
-const TasksList = () => {
+//1
+const TasksList = ({ TaskId }) => {
+    const navigate = useNavigate()
     const HeaderList = ['TaskSubject', 'TaskName', 'Day&Time', 'TaskType', 'Edit', 'Delete']
     const IconList = [
         { Id: 1, Icon: <EditIcon />, Action: 'Edit' },
@@ -32,11 +34,13 @@ const TasksList = () => {
                 }
                 dispatch(deleteTaskDetails(GetEmployeeDetailsBody))
             }
-            // if (value.Action == "Edit") {
-            //     if (value.Action == "Edit") {
-            //         // Navigate("../AddEmployee/" + value.Id)
-            //     }
-            // }
+
+
+
+        }
+        if (value.Action == "Edit") {
+            TaskId(value.Id)
+            navigate("/AddTask/" + value.Id)
         }
     }
 
@@ -50,7 +54,7 @@ const TasksList = () => {
 
     useEffect(() => {
         dispatch(getTasksList())
-    },[])
+    }, [])
     return (
         <Container>
             <Grid container spacing={2}>
